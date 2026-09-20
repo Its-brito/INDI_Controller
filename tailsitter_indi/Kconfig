@@ -1,0 +1,6 @@
+config MODULES_TAILSITTER_INDI
+	bool "tailsitter_indi"
+	default n
+	---help---
+		Enable Tailsitter INDI Attitude Controller
+
