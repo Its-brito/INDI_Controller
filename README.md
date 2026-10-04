@@ -14,7 +14,7 @@ move default.px4board to the respective directory
 cp -f default.px4board ~/PX4-Autopilot/boards/px4/sitl/
 ```
 
-## How to run tests
+## How to run controller
 ###1. Start PX4
 
 ```
@@ -26,17 +26,6 @@ make px4_sitl gz_quadtailsitter
 Inside px4> start the module tailsitter_indi/pid
 ```
 px4> tailsitter_indi start
-```
-
-###3. Run Custom scripts 
-- Run Lissajous' FIgure-8 (in a new terminal)
-```
-python3 lissajous_trajectory.py
-```
-
-- Run Horizontal-Flight Doublet
-```
-python3 horizontal_doublet.py
 ```
 ## How to check logs
 
