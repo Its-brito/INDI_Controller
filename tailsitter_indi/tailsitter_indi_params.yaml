@@ -1,0 +1,173 @@
+module_name: tailsitter_indi
+parameters:
+- group: Tailsitter INDI
+  definitions:
+    INDI_EN:
+      description:
+        short: Use tailsitter INDI instead of the stock rate controllers
+        long: Read by rc.vtol_apps at boot. 1 = start tailsitter_indi and do NOT start
+          mc_rate_control / fw_rate_control (they publish the same torque topics).
+          0 = stock PX4. Requires reboot.
+      type: boolean
+      default: 0
+      reboot_required: true
+    INDI_MC_ATT_X:
+      description:
+        short: MC attitude gain, hover x (roll)
+        long: Desired body rate per rad of attitude error.
+      type: float
+      default: 6.5
+      min: 0.0
+      max: 20.0
+      decimal: 2
+    INDI_MC_ATT_Y:
+      description:
+        short: MC attitude gain, hover y (pitch)
+      type: float
+      default: 6.5
+      min: 0.0
+      max: 20.0
+      decimal: 2
+    INDI_MC_ATT_Z:
+      description:
+        short: MC attitude gain, hover z (yaw)
+      type: float
+      default: 2.8
+      min: 0.0
+      max: 20.0
+      decimal: 2
+    INDI_FW_ATT_R:
+      description:
+        short: FW attitude gain, FW roll (hover -z)
+      type: float
+      default: 4.0
+      min: 0.0
+      max: 20.0
+      decimal: 2
+    INDI_FW_ATT_P:
+      description:
+        short: FW attitude gain, FW pitch (hover y)
+      type: float
+      default: 4.0
+      min: 0.0
+      max: 20.0
+      decimal: 2
+    INDI_FW_ATT_Y:
+      description:
+        short: FW attitude gain, FW yaw (hover x)
+      type: float
+      default: 2.0
+      min: 0.0
+      max: 20.0
+      decimal: 2
+    INDI_RATE_K_X:
+      description:
+        short: Rate-loop gain hover x
+        long: Virtual control nu = K (omega_d - omega) [rad/s^2 per rad/s].
+      type: float
+      default: 10.0
+      min: 0.0
+      max: 60.0
+      decimal: 1
+    INDI_RATE_K_Y:
+      description:
+        short: Rate-loop gain hover y
+      type: float
+      default: 10.0
+      min: 0.0
+      max: 60.0
+      decimal: 1
+    INDI_RATE_K_Z:
+      description:
+        short: Rate-loop gain hover z
+      type: float
+      default: 10.0
+      min: 0.0
+      max: 60.0
+      decimal: 1
+    INDI_GI_MC_X:
+      description:
+        short: Inverse effectiveness hover x, MC
+        long: Normalized torque per rad/s^2. From g_matrix_quadtailsitter.py at 677 rad/s.
+      type: float
+      default: 0.0168
+      min: 0.0
+      max: 1.0
+      decimal: 4
+    INDI_GI_MC_Y:
+      description:
+        short: Inverse effectiveness hover y, MC
+      type: float
+      default: 0.0047
+      min: 0.0
+      max: 1.0
+      decimal: 4
+    INDI_GI_MC_Z:
+      description:
+        short: Inverse effectiveness hover z, MC
+      type: float
+      default: 0.0100
+      min: 0.0
+      max: 1.0
+      decimal: 4
+    INDI_GI_FW_X:
+      description:
+        short: Inverse effectiveness hover x (FW yaw), FW
+        long: Normalized torque per rad/s^2. From g_matrix_quadtailsitter.py at 530/650 rad/s (18 m/s cruise).
+      type: float
+      default: 0.0193
+      min: 0.0
+      max: 1.0
+      decimal: 4
+    INDI_GI_FW_Y:
+      description:
+        short: Inverse effectiveness hover y (FW pitch), FW
+      type: float
+      default: 0.0054
+      min: 0.0
+      max: 1.0
+      decimal: 4
+    INDI_GI_FW_Z:
+      description:
+        short: Inverse effectiveness hover z (FW roll), FW
+      type: float
+      default: 0.0115
+      min: 0.0
+      max: 1.0
+      decimal: 4
+    INDI_G2_Z:
+      description:
+        short: Rotor spin-up effectiveness, hover z
+        long: rad/s^2 per (normalized torque / s). Physical value from model.sdf is 11.61,
+          but gz only spins the rotor joints at 1/rotorVelocitySlowdownSim (=5) and the
+          motor plugin models no spin-up reaction, so the effective value is 0..2.32.
+          2.32 is stable for any true value in 0..11.61 (see indi_axis_sim.py); 11.61 is
+          UNSTABLE if the plant has no G2. Set 0 to disable.
+      type: float
+      default: 2.32
+      min: 0.0
+      max: 100.0
+      decimal: 2
+    INDI_ACT_TAU:
+      description:
+        short: Actuator (motor) time constant for u0
+      type: float
+      default: 0.02
+      min: 0.0
+      max: 0.2
+      unit: s
+      decimal: 3
+    INDI_LPF_HZ:
+      description:
+        short: Synchronised LPF cutoff (omega_dot and u0)
+      type: float
+      default: 20.0
+      min: 1.0
+      max: 100.0
+      unit: Hz
+      decimal: 1
+    INDI_FW_TC_EN:
+      description:
+        short: FW coordinated-turn yaw-rate feed-forward
+      type: boolean
+      default: 1

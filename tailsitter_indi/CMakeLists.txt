@@ -4,4 +4,10 @@ px4_add_module(
     STACK_MAIN 2000
     SRCS
         tailsitter_indi.cpp
+        tailsitter_indi.hpp
+    MODULE_CONFIG
+        tailsitter_indi_params.yaml
+    DEPENDS
+        mathlib
+        px4_work_queue
 )
