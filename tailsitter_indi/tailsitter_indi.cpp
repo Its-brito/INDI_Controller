@@ -77,7 +77,12 @@ bool TailsitterINDI::allocated_torque(Vector3f &u_alloc, const Vector3f &difthr_
 {
 	// allocated = (torque the allocator was asked for) - (what it could not allocate).
 	// vehicle_torque_setpoint instance 0 is written by vtol_att_control AFTER the
-	// VT_FW_DIFTHR_S_* scaling, so divide it back out to get INDI's own domain.
+	// VT_FW_DIFTHR_S_* scaling. INDI's own domain (_u_cmd, G^-1) is the torque that is
+	// actually APPLIED (we publish _u_cmd / scale, vtol_att_control multiplies by scale
+	// again), so the allocator feedback is used as it is: NO division by the scale.
+	// (Dividing here put u_f in the published domain, i.e. 1/scale = 3.33x too large on
+	// the FW yaw axis with VT_FW_DIFTHR_S_Y = 0.3: positive feedback with gain 3.33 that
+	// saturated the yaw axis within ~0.15 s of every transition to fixed-wing flight.)
 	_vehicle_torque_setpoint0_sub.update(&_torque_sp0);
 	_control_allocator_status_sub.update(&_ca_status);
 
@@ -95,7 +100,7 @@ bool TailsitterINDI::allocated_torque(Vector3f &u_alloc, const Vector3f &difthr_
 			return false; // axis disabled in FW (VT_FW_DIFTHR_EN) - no feedback possible
 		}
 
-		u_alloc(i) = applied / difthr_scale(i);
+		u_alloc(i) = applied;
 	}
 
 	return u_alloc.isAllFinite();
